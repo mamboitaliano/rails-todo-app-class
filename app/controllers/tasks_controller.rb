@@ -27,7 +27,13 @@ class TasksController < ApplicationController
     else
       render 'edit'
     end
+  end
 
+  def completed
+    @task = Task.find(params[:id])
+    @task.completed = true
+    @task.save!
+    redirect_to task_list_path(params[:task_list_id])
   end
 
   def destroy
