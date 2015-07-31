@@ -1,6 +1,5 @@
-require 'rails_helper'
 
-RSpec.describe "task_lists", :type => :request do
+describe "task_lists", :type => :request do
   it "creates a task_lists and redirects to the task_list's page" do
     get "/task_lists/new"
     expect(response).to render_template(:new)
@@ -13,5 +12,6 @@ RSpec.describe "task_lists", :type => :request do
     expect(response).to render_template(:show)
     expect(response.body).to include("My List")
   end
+
 
 end
