@@ -1,51 +1,59 @@
 class TasksController < ApplicationController
 
   def new
-    @task = Task.new
-    @task_list = TaskList.find(params[:task_list_id])
+    task = Task.new
   end
 
   def create
-    @task = Task.new(task_params)
-    @task.task_list_id = params[:task_list_id]
-    if @task.save!
-      redirect_to task_list_path(params[:task_list_id])
+    task = Task.new(task_params)
+    task.task_list_id = params[:task_list_id]
+    if task.save!
+      render json: task, status: :created
     else
-      render 'new'
+      render_errors(task)
     end
   end
 
   def edit
-    @task= Task.find(params[:id])
-    @task_list = TaskList.find(params[:task_list_id])
+    task= Task.find(params[:id])
+    task_list = TaskList.find(params[:task_list_id])
   end
 
   def update
-    @task= Task.find(params[:id])
-    if @task.update(task_params)
-      redirect_to task_list_path(params[:task_list_id])
+    task= Task.find(params[:id])
+    if task.update(task_params)
+      render json: task
     else
-      render 'edit'
+      render_errors(task)
     end
   end
 
   def completed
-    @task = Task.find(params[:id])
-    @task.completed = true
-    @task.save!
-    redirect_to task_list_path(params[:task_list_id])
+    task = Task.find(params[:id])
+    if task.completed == true
+      task.update_attributes(completed: false)
+    else
+      task.update_attributes(completed: true)
+    end
+    render json: task
   end
 
   def destroy
-    @task= Task.find(params[:id])
-    @task.destroy
-    redirect_to task_list_path(params[:task_list_id])
+    task= Task.find(params[:id])
+    if task.destroy
+      render json: task
   end
 
   private
-  def task_params
-    params.require(:task).permit(:description)
-  end
+    def task_params
+      params.require(:task).permit(:description)
+    end
+
+    def render_errors(task)
+      render :json{
+        errors: task.errors.full_messages.join(', ')
+      }, status: :bad_request
+    end
 
 
 end
