@@ -1,0 +1,3 @@
+<% @task_lists.each do |task_list|%>
+  <%= link_to "#{task_list.name}", task_list_path(task_list.id) %>
+<% end %>
